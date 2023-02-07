@@ -1,5 +1,7 @@
 const express = require('express');
-const { getTalkersData } = require('../middleware/talkerServices');
+const { getTalkersData, validateName,
+    validateAge, validateTalk,
+    validateWatchedAt, validateRate } = require('../middleware/talkerServices');
 
 const router = express.Router();
 
@@ -23,6 +25,27 @@ router.get('/talker/:id', async (req, res) => {
   }
   return res.status(HTTP_ERROR_STATUS).json({ message: 'Pessoa palestrante não encontrada' });
 });
+
+router.post('/talker',
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt,
+  validateRate,
+  async (req, res) => {
+    const { name, age, talk: { watchedAt, rate } } = req.body;
+    const newID = await getTalkersData().length + 1;
+    const newTalkerObj = {
+      id: newID,
+      name,
+      age,
+      talk: {
+        watchedAt,
+        rate,
+      },
+    };
+    res.status(201).json(newTalkerObj);
+  });
 
 /* Aqui preciso fazer aquela parte de next */
 // router.put('/talker/:id', async (req, res) => {
