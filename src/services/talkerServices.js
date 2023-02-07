@@ -6,22 +6,6 @@ const getTalkersData = async () => {
   return JSON.parse(file);
 };
 
-const getID = async (id) => {
-  const talkersData = await getTalkersData();
-  return talkersData.find((obj) => obj.id === +id);
-};
-
-const generateToken = () => {
-  let token = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  for (let i = 0; i < 16; i += 1) {
-    token += characters[Math.floor(Math.random() * characters.length)];
-  }
-  return token;
-};
-
 module.exports = {
   getTalkersData,
-  getID,
-  generateToken,
 };
