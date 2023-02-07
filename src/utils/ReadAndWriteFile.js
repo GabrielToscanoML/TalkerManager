@@ -30,11 +30,22 @@ const changeData = async (post, id) => {
         data[index].talk.watchedAt = post.talk.watchedAt;
         data[index].talk.rate = +post.talk.rate;
       }
-    }    
+    }
     await fs.writeFile('src/talker.json', JSON.stringify(data));
   } catch (error) {
     return null;
   }
 };
 
-module.exports = { getTalkersData, insertData, changeData };
+const deleteData = async (id) => {
+  try {
+    const data = await getTalkersData();
+    const dataIndex = data.findIndex((item) => item.id === +id);
+    data.splice(dataIndex, 1);
+    await fs.writeFile('src/talker.json', JSON.stringify(data));
+  } catch (error) {
+    return null;
+  }
+};
+
+module.exports = { getTalkersData, insertData, changeData, deleteData };
