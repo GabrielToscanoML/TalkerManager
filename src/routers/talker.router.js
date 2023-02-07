@@ -24,4 +24,22 @@ router.get('/talker/:id', async (req, res) => {
   return res.status(HTTP_ERROR_STATUS).json({ message: 'Pessoa palestrante não encontrada' });
 });
 
+/* Aqui preciso fazer aquela parte de next */
+// router.put('/talker/:id', async (req, res) => {
+//   const { id } = req.params;
+//   const { name, age, talk } = req.body;
+//   const talkersData = await getTalkersData();
+//   let alteredTalker;
+
+//   for (let index = 0; index < talkersData.length; index += 1) {
+//     if (talkersData[index].id === +id) {
+//       talkersData[index].name = name;
+//       talkersData[index].age = age;
+//       talkersData[index].talk = talk;
+//       alteredTalker = talkersData[index];
+//     }
+//   }
+//  res.status(HTTP_OK_STATUS).json({ alteredTalker });
+// });
+
 module.exports = router;
