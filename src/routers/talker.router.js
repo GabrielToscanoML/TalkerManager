@@ -1,7 +1,7 @@
 const express = require('express');
-const { getTalkersData, validateName,
-    validateAge, validateTalk,
-    validateWatchedAt, validateRate } = require('../middleware/talkerServices');
+const { validateName, validateAge, validateTalk,
+    validateWatchedAt, validateRate, validateToken } = require('../middleware/talkerServices');
+const { getTalkersData, insertData } = require('../utils/ReadAndWriteFile');
 
 const router = express.Router();
 
@@ -27,23 +27,21 @@ router.get('/talker/:id', async (req, res) => {
 });
 
 router.post('/talker',
+  validateToken,
   validateName,
   validateAge,
   validateTalk,
   validateWatchedAt,
   validateRate,
   async (req, res) => {
-    const { name, age, talk: { watchedAt, rate } } = req.body;
-    const newID = await getTalkersData().length + 1;
+    const reqBody = req.body;
+    const talkersData = await getTalkersData();
+    const newID = (talkersData.length) + 1;
     const newTalkerObj = {
       id: newID,
-      name,
-      age,
-      talk: {
-        watchedAt,
-        rate,
-      },
+      ...reqBody,
     };
+    await insertData(newTalkerObj);
     res.status(201).json(newTalkerObj);
   });
 

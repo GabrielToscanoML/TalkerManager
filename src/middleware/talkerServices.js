@@ -1,12 +1,4 @@
-const { readFile } = require('fs/promises');
-const path = require('path');
-
 const HTTP_ERROR_STATUS = 400;
-
-const getTalkersData = async () => {
-  const file = await readFile(path.resolve(__dirname, '../', 'talker.json'));
-  return JSON.parse(file);
-};
 
 const generateToken = () => {
   let token = '';
@@ -98,9 +90,23 @@ const validateRate = (req, res, next) => {
   return next();
 };
 
+const validateToken = (req, res, next) => {
+  const { authorization } = req.headers;
+  console.log('calma', authorization);
+  if (!authorization) {
+    return res.status(401).json({ message: 'Token não encontrado' });
+  }
+  if (authorization.length !== 16 || typeof (authorization) !== 'string') {
+    return res.status(401).json(
+      { message: 'Token inválido' },
+      );
+  }
+  return next();
+};
+
 module.exports = {
-  getTalkersData,
   generateToken,
+  validateToken,
   validateName,
   validateAge,
   validateTalk,
