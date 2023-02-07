@@ -1,7 +1,7 @@
 const express = require('express');
 const { validateName, validateAge, validateTalk,
     validateWatchedAt, validateRate, validateToken } = require('../middleware/talkerServices');
-const { getTalkersData, insertData } = require('../utils/ReadAndWriteFile');
+const { getTalkersData, insertData, changeData } = require('../utils/ReadAndWriteFile');
 
 const router = express.Router();
 
@@ -46,21 +46,28 @@ router.post('/talker',
   });
 
 /* Aqui preciso fazer aquela parte de next */
-// router.put('/talker/:id', async (req, res) => {
-//   const { id } = req.params;
-//   const { name, age, talk } = req.body;
-//   const talkersData = await getTalkersData();
-//   let alteredTalker;
-
-//   for (let index = 0; index < talkersData.length; index += 1) {
-//     if (talkersData[index].id === +id) {
-//       talkersData[index].name = name;
-//       talkersData[index].age = age;
-//       talkersData[index].talk = talk;
-//       alteredTalker = talkersData[index];
-//     }
-//   }
-//  res.status(HTTP_OK_STATUS).json({ alteredTalker });
-// });
+router.put('/talker/:id',
+  validateToken,
+  validateName,
+  validateAge,
+  validateTalk,
+  validateWatchedAt, 
+  validateRate,
+  async (req, res) => {
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+  const { id } = req.params;
+  await changeData(req.body, id);
+  const data = {
+    id: +id,
+    name,
+    age: +age,
+    talk: {
+      watchedAt,
+      rate: +rate,
+    },
+  };
+  console.log(data);
+ res.status(HTTP_OK_STATUS).json(data);
+});
 
 module.exports = router;
