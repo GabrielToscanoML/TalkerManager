@@ -5,7 +5,7 @@ const loginRouter = require('./routers/login.router');
 
 const app = express();
 app.use(express.json());
-app.use(talkerRouter);
+app.use('/talker', talkerRouter);
 app.use(loginRouter);
 
 const HTTP_OK_STATUS = 200;

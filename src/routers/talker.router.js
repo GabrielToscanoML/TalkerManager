@@ -8,13 +8,25 @@ const router = express.Router();
 const HTTP_OK_STATUS = 200;
 const HTTP_ERROR_STATUS = 404;
 
-router.get('/talker', async (req, res) => {
+router.get('/', async (_req, res) => {
   const talkersData = await getTalkersData();
   if (talkersData) return res.status(HTTP_OK_STATUS).json(talkersData);
   return res.status(HTTP_ERROR_STATUS).json([]);
 });
 
-router.get('/talker/:id', async (req, res) => {
+router.get('/search',
+  validateToken,
+  async (req, res) => {
+  const { q } = req.query;
+  const allTalkers = await getTalkersData();
+  const resultFilterExistence = allTalkers.filter(
+    (talker) => talker.name.includes(q),
+  );
+  if (resultFilterExistence) return res.status(HTTP_OK_STATUS).json(resultFilterExistence);
+  return res.status(HTTP_OK_STATUS).json([]);
+});
+
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
   const talkersData = await getTalkersData();
 
@@ -26,7 +38,7 @@ router.get('/talker/:id', async (req, res) => {
   return res.status(HTTP_ERROR_STATUS).json({ message: 'Pessoa palestrante não encontrada' });
 });
 
-router.post('/talker',
+router.post('/',
   validateToken,
   validateName,
   validateAge,
@@ -45,7 +57,7 @@ router.post('/talker',
     res.status(201).json(newTalkerObj);
   });
 
-router.put('/talker/:id',
+router.put('/:id',
   validateToken,
   validateName,
   validateAge,
@@ -68,7 +80,7 @@ router.put('/talker/:id',
  res.status(HTTP_OK_STATUS).json(data);
 });
 
-router.delete('/talker/:id',
+router.delete('/:id',
   validateToken,
   async (req, res) => {
   const talkersData = await getTalkersData();
